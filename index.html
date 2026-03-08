@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROHIT KAWAN — Into The Mountains</title>
+<link rel="icon" type="image/jpeg" href="logo.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #060b14;
+    --ash: #111b2d;
+    --ember: #60a5fa;
+    --stone: #8fa6c2;
+    --fog: #d8e6f7;
+    --snow: #eef6ff;
+    --mist: rgba(96,165,250,0.16);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--fog);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--ember);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    mix-blend-mode: screen;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.35;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 500;
+    padding: 24px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(to bottom, rgba(8,14,26,0.94), transparent);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.25em;
+    color: var(--snow);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--ember); }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--stone);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--ember); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    height: auto;
+    position: relative;
+    display: flex; align-items: flex-end;
+    padding: 110px 48px 80px;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 60% 40%, rgba(96,165,250,0.14) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(56,120,190,0.18) 0%, transparent 50%),
+      linear-gradient(160deg, #0a1424 0%, #13263f 40%, #0a111d 100%);
+  }
+
+  /* Mountain SVG silhouette */
+  .mountain-silhouette {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 65%;
+    opacity: 0.6;
+  }
+
+  .hero-content { position: relative; z-index: 2; max-width: 900px; }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 14vw, 13rem);
+    line-height: 0.88;
+    color: var(--snow);
+    letter-spacing: 0.02em;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+  }
+  .hero-title .accent { color: var(--ember); display: block; }
+
+  .hero-sub {
+    margin-top: 32px;
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--stone);
+    max-width: 480px;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp 1s 0.8s forwards;
+  }
+
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 14px;
+    margin-top: 40px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ember);
+    text-decoration: none;
+    opacity: 0;
+    animation: fadeUp 1s 1s forwards;
+    transition: gap 0.3s;
+  }
+  .hero-cta:hover { gap: 22px; }
+  .hero-cta::after {
+    content: '——';
+    display: block;
+  }
+
+  .scroll-indicator {
+    position: absolute; right: 48px; bottom: 80px;
+    writing-mode: vertical-rl;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: var(--stone);
+    opacity: 0;
+    animation: fadeIn 1.5s 1.5s forwards;
+  }
+
+  .scroll-line {
+    display: block;
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, var(--ember), transparent);
+    margin: 12px auto 0;
+    animation: scrollPulse 2s 2s infinite;
+  }
+
+  /* ABOUT */
+  #about {
+    padding: 140px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: center;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 24px;
+  }
+
+  .about-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 0.92;
+    color: var(--snow);
+    margin-bottom: 32px;
+  }
+
+  .about-text {
+    font-size: 1.15rem;
+    line-height: 1.85;
+    color: var(--stone);
+    margin-bottom: 20px;
+  }
+  .about-text em { color: var(--fog); font-style: italic; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 48px;
+  }
+  .stat-card {
+    background: var(--ash);
+    padding: 28px 24px;
+    border-left: 2px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .stat-card:hover {
+    border-color: var(--ember);
+    background: rgba(96,165,250,0.08);
+  }
+  .stat-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: var(--ember);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--stone);
+    margin-top: 6px;
+  }
+
+  .about-portrait {
+    position: relative;
+  }
+  .portrait-frame {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: var(--ash);
+    position: relative;
+    overflow: hidden;
+  }
+  .portrait-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  .portrait-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 80px rgba(96,165,250,0.12);
+  }
+  .portrait-decoration {
+    position: absolute;
+    bottom: -20px; right: -20px;
+    width: 120px; height: 120px;
+    border: 1px solid rgba(96,165,250,0.28);
+    z-index: -1;
+  }
+  .portrait-decoration2 {
+    position: absolute;
+    top: -20px; left: -20px;
+    width: 60px; height: 60px;
+    border: 1px solid rgba(96,165,250,0.16);
+    z-index: -1;
+  }
+
+  /* TREKS */
+  #treks {
+    padding: 140px 0;
+    overflow: hidden;
+  }
+  .treks-header {
+    padding: 0 48px;
+    margin-bottom: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .treks-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 0.92;
+    color: var(--snow);
+  }
+  .treks-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--stone);
+    letter-spacing: 0.15em;
+  }
+
+  .treks-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    padding: 0 48px;
+  }
+
+  .trek-card {
+    position: relative;
+    aspect-ratio: 3/4;
+    background: var(--ash);
+    overflow: hidden;
+    cursor: none;
+  }
+
+  .trek-card:first-child {
+    grid-row: span 2;
+    aspect-ratio: unset;
+  }
+
+  .trek-bg {
+    position: absolute; inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: transform 0.6s ease;
+  }
+  .trek-card:hover .trek-bg { transform: scale(1.04); }
+
+  .trek-bg-1 {
+    background-image:
+      linear-gradient(160deg, rgba(9,20,37,0.35) 0%, rgba(9,20,37,0.6) 100%),
+      url('images/trek-1.jpg');
+    background-color: #1b3150;
+  }
+  .trek-bg-2 {
+    background-image:
+      linear-gradient(160deg, rgba(9,20,37,0.35) 0%, rgba(9,20,37,0.6) 100%),
+      url('images/trek-2.jpg');
+    background-color: #1a2f48;
+  }
+  .trek-bg-3 {
+    background-image:
+      linear-gradient(160deg, rgba(9,20,37,0.35) 0%, rgba(9,20,37,0.6) 100%),
+      url('images/trek-3.jpg');
+    background-color: #13324c;
+  }
+  .trek-bg-4 {
+    background-image:
+      linear-gradient(160deg, rgba(9,20,37,0.35) 0%, rgba(9,20,37,0.6) 100%),
+      url('images/trek-4.jpg');
+    background-color: #23385a;
+  }
+
+  .trek-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,8,5,0.95) 0%, rgba(10,8,5,0.2) 60%, transparent 100%);
+    z-index: 1;
+  }
+
+  .trek-info {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 32px 28px;
+    z-index: 2;
+  }
+
+  .trek-region {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 10px;
+  }
+
+  .trek-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--snow);
+    line-height: 0.95;
+    margin-bottom: 12px;
+    transition: color 0.3s;
+  }
+  .trek-card:hover .trek-name { color: var(--ember); }
+
+  .trek-meta {
+    display: flex; gap: 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--stone);
+    letter-spacing: 0.1em;
+  }
+
+  .trek-elevation {
+    position: absolute;
+    top: 24px; right: 24px;
+    z-index: 2;
+    text-align: right;
+  }
+  .trek-elevation-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--snow);
+    line-height: 1;
+    opacity: 0.6;
+  }
+  .trek-elevation-unit {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--stone);
+    letter-spacing: 0.2em;
+  }
+
+  /* BLOG */
+  #blog {
+    padding: 140px 48px;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+  .blog-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 64px;
+  }
+  .blog-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 0.92;
+    color: var(--snow);
+  }
+  .blog-all {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--ember);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: opacity 0.3s;
+  }
+  .blog-all:hover { opacity: 0.7; }
+
+  .blog-list { display: flex; flex-direction: column; }
+
+  .blog-post {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 40px;
+    align-items: center;
+    padding: 36px 0;
+    border-bottom: 1px solid rgba(138,126,110,0.12);
+    text-decoration: none;
+    transition: background 0.3s;
+    position: relative;
+  }
+  .blog-post::before {
+    content: '';
+    position: absolute;
+    left: -48px; right: -48px;
+    top: 0; bottom: 0;
+    background: rgba(96,165,250,0.06);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .blog-post:hover::before { opacity: 1; }
+
+  .blog-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: var(--stone);
+    opacity: 0.3;
+    line-height: 1;
+  }
+
+  .blog-body { flex: 1; }
+
+  .blog-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 8px;
+  }
+
+  .blog-headline {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--snow);
+    line-height: 1.3;
+    margin-bottom: 10px;
+    transition: color 0.3s;
+  }
+  .blog-post:hover .blog-headline { color: var(--ember); }
+
+  .blog-excerpt {
+    font-size: 1rem;
+    color: var(--stone);
+    line-height: 1.6;
+  }
+
+  .blog-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--stone);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    opacity: 0.6;
+  }
+
+  /* CONTACT */
+  #contact {
+    padding: 140px 48px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .contact-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(96,165,250,0.1) 0%, transparent 65%),
+      linear-gradient(to bottom, var(--ink) 0%, #101c30 50%, var(--ink) 100%);
+  }
+
+  .contact-inner { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
+
+  .contact-pre {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: var(--ember);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .contact-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.88;
+    color: var(--snow);
+    margin-bottom: 32px;
+  }
+
+  .contact-body {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--stone);
+    line-height: 1.7;
+    margin-bottom: 56px;
+  }
+
+  .contact-social {
+    display: flex;
+    justify-content: center;
+  }
+
+  .instagram-link {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 1px solid rgba(96,165,250,0.35);
+    background: linear-gradient(145deg, rgba(96,165,250,0.18), rgba(17,27,45,0.9));
+    color: var(--snow);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .instagram-link:hover {
+    transform: translateY(-4px) scale(1.04);
+    border-color: var(--ember);
+    box-shadow: 0 10px 24px rgba(96,165,250,0.2);
+  }
+
+  .instagram-link span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  .instagram-icon {
+    width: 30px;
+    height: 30px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+  }
+
+  .contact-note {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--stone);
+    margin-top: 18px;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 48px;
+    border-top: 1px solid rgba(138,126,110,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+    color: var(--stone);
+  }
+  .footer-logo span { color: var(--ember); }
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    color: rgba(138,126,110,0.4);
+    letter-spacing: 0.1em;
+  }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--stone);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--ember); }
+
+  /* DIVIDER */
+  .section-divider {
+    width: 48px; height: 1px;
+    background: var(--ember);
+    margin-bottom: 32px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { transform: scaleY(1); opacity: 1; }
+    50% { transform: scaleY(0.6); opacity: 0.4; }
+  }
+
+  /* Reveal on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.15s; }
+  .reveal-delay-2 { transition-delay: 0.3s; }
+  .reveal-delay-3 { transition-delay: 0.45s; }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    #hero { min-height: 100vh; padding: 96px 24px 60px; }
+    #about { grid-template-columns: 1fr; gap: 60px; padding: 80px 24px; }
+    .treks-grid { grid-template-columns: 1fr; padding: 0 24px; }
+    .trek-card:first-child { grid-row: span 1; aspect-ratio: 3/4; }
+    #blog { padding: 80px 24px; }
+    .blog-post { grid-template-columns: 50px 1fr; }
+    .blog-date { display: none; }
+    #contact { padding: 80px 24px; }
+    footer { flex-direction: column; gap: 24px; text-align: center; }
+    .treks-header { padding: 0 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">ROHIT<span>.</span>KAWAN</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#treks">Treks</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+
+  <svg class="mountain-silhouette" viewBox="0 0 1440 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="mtnGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1a3558" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#060b14" stop-opacity="1"/>
+      </linearGradient>
+    </defs>
+    <!-- Background range -->
+    <path d="M0 600 L0 420 L80 380 L160 340 L240 280 L320 320 L400 250 L480 200 L560 240 L620 180 L680 160 L740 190 L800 150 L860 130 L920 155 L980 200 L1040 240 L1100 200 L1160 230 L1240 280 L1320 320 L1440 280 L1440 600 Z" fill="url(#mtnGrad)" opacity="0.4"/>
+    <!-- Mid range -->
+    <path d="M0 600 L0 500 L100 460 L200 420 L280 380 L360 400 L440 350 L520 310 L580 340 L640 290 L720 260 L780 295 L840 270 L920 300 L1000 340 L1080 310 L1160 350 L1260 390 L1360 430 L1440 410 L1440 600 Z" fill="#0e1a2b" opacity="0.7"/>
+    <!-- Foreground -->
+    <path d="M0 600 L0 560 L120 520 L240 490 L340 510 L440 480 L540 500 L660 530 L760 510 L860 530 L960 510 L1060 540 L1200 570 L1440 550 L1440 600 Z" fill="#060b14"/>
+  </svg>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">☞ High Altitude Explorer &amp; Storyteller</p>
+    <h1 class="hero-title">
+      INTO<br>
+      <span class="accent">THE</span>
+      MOUNTAINS
+    </h1>
+    <p class="hero-sub">Chasing summits, silence, and the stories that only exist at altitude.</p>
+    <a href="#treks" class="hero-cta">Explore my treks</a>
+  </div>
+
+  <div class="scroll-indicator">
+    Scroll to discover
+    <span class="scroll-line"></span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="reveal">
+    <p class="section-label">// 001 — About</p>
+    <div class="section-divider"></div>
+    <h2 class="about-title">The person behind<br>the bootprints</h2>
+    <p class="about-text">I'm <em>ROHIT KAWAN</em> — a trekker, amateur photographer and videographer who's spent the last few years putting boots on some of the world's most scenic terrain.</p>
+    <p class="about-text">Every journey has carved a little more of who I am.<br>
+      <em>This site is my trail journal — raw, honest, and very muddy.</em></p>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">6</div>
+        <div class="stat-label">ROUTES COMPLETED</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-number">4.3K</div>
+        <div class="stat-label">MAX ELEVATION (m)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">2</div>
+        <div class="stat-label">YEARS ON TRAIL</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-portrait reveal reveal-delay-1">
+    <div class="portrait-frame">
+      <img src="/images/me.webp" alt="Rohit Kawan portrait">
+    </div>
+    <div class="portrait-decoration"></div>
+    <div class="portrait-decoration2"></div>
+  </div>
+</section>
+
+<!-- TREKS -->
+<section id="treks">
+  <div class="treks-header reveal">
+    <div>
+      <p class="section-label">// 002 — Featured Treks</p>
+      <h2 class="treks-title">Routes that<br>shaped me</h2>
+    </div>
+    <span class="treks-count">/ / ROUTES</span>
+  </div>
+
+  <div class="treks-grid">
+    <div class="trek-card reveal">
+      <div class="trek-bg trek-bg-1"></div>
+      <div class="trek-overlay"></div>
+      <div class="trek-elevation">
+        <div class="trek-elevation-num">4,380</div>
+        <div class="trek-elevation-unit">METRES</div>
+      </div>
+      <div class="trek-info">
+        <div class="trek-region">Nepal / Langtang</div>
+        <div class="trek-name">Kyanjin Ri<br>Kyanjin Gompa </div>
+        <div class="trek-meta">
+          <span>5 DAYS</span>
+          <span>71 KM</span>
+          <span>MODERATE</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="trek-card reveal reveal-delay-1">
+      <div class="trek-bg trek-bg-2"></div>
+      <div class="trek-overlay"></div>
+      <div class="trek-elevation">
+        <div class="trek-elevation-num">4,130</div>
+        <div class="trek-elevation-unit">METRES</div>
+      </div>
+      <div class="trek-info">
+        <div class="trek-region">Nepal / Kaski</div>
+        <div class="trek-name">Annapurna<br>Base Camp</div>
+        <div class="trek-meta">
+          <span>5 DAYS</span>
+          <span>65 KM</span>
+          <span>MODERATE</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="trek-card reveal reveal-delay-2">
+      <div class="trek-bg trek-bg-3"></div>
+      <div class="trek-overlay"></div>
+      <div class="trek-elevation">
+        <div class="trek-elevation-num">4,103</div>
+        <div class="trek-elevation-unit">METRES</div>
+      </div>
+      <div class="trek-info">
+        <div class="trek-region">Nepal / Sindhupalchowk</div>
+        <div class="trek-name">Pachpokhari<br>Langtang NP</div>
+        <div class="trek-meta">
+          <span>4 DAYS</span>
+          <span>59 KM</span>
+          <span>MODERATE</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="trek-card reveal reveal-delay-3">
+      <div class="trek-bg trek-bg-4"></div>
+      <div class="trek-overlay"></div>
+      <div class="trek-elevation">
+        <div class="trek-elevation-num">4,380</div>
+        <div class="trek-elevation-unit">METRES</div>
+      </div>
+      <div class="trek-info">
+        <div class="trek-region">Nepal / Rasu7wa</div>
+        <div class="trek-name">Gosaikunda</div>
+        <div class="trek-meta">
+          <span>4 DAYS</span>
+          <span>59 KM</span>
+          <span>MODERATE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-bg"></div>
+  <div class="contact-inner reveal">
+    <p class="contact-pre">// 003 — Get in Touch</p>
+    <h2 class="contact-title">Let's talk trails</h2>
+    <p class="contact-body">Planning an expedition? Interested in collaborating? Or just want to talk about mountains — I'm always up for that.</p>
+
+    <div class="contact-social">
+      <a class="instagram-link" href="https://www.instagram.com/roraririiru/" target="_blank" rel="noopener noreferrer" aria-label="Instagram profile">
+        <svg class="instagram-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="5" ry="5"></rect>
+          <circle cx="12" cy="12" r="4"></circle>
+          <circle cx="17.5" cy="6.5" r="1"></circle>
+        </svg>
+        <span>Open Instagram</span>
+      </a>
+    </div>
+    <p class="contact-note">Follow along for trail stories and updates</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">ROHIT<span>.</span>KAWAN</div>
+  <div class="footer-links">
+    <a href="https://www.instagram.com/roraririiru/" target="_blank">Instagram</a>
+    
+ 
+  </div>
+  <div class="footer-copy">© 2026 — All rights reserved</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  let mx = 0, my = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+  });
+
+  document.querySelectorAll('a, button, .trek-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform += ' scale(1.8)';
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(r => observer.observe(r));
+
+  // Nav background on scroll
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = window.scrollY > 80
+      ? 'rgba(10,8,5,0.97)'
+      : 'linear-gradient(to bottom, rgba(10,8,5,0.95), transparent)';
+  });
+</script>
+</body>
+</html>
