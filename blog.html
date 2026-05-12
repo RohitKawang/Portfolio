@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — ROHIT KAWAN</title>
+<link rel="icon" type="image/jpeg" href="logo.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #060b14;
+    --ash: #111b2d;
+    --ember: #60a5fa;
+    --stone: #8fa6c2;
+    --fog: #d8e6f7;
+    --snow: #eef6ff;
+    --mist: rgba(96,165,250,0.16);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--fog);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--ember);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.06s ease;
+    mix-blend-mode: screen;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.35;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 500;
+    padding: 24px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(to bottom, rgba(8,14,26,0.94), transparent);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.25em;
+    color: var(--snow);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--ember); }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--stone);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--ember); }
+
+  /* BLOG HERO */
+  #blog-hero {
+    min-height: 60vh;
+    height: auto;
+    position: relative;
+    display: flex; align-items: center;
+    padding: 140px 48px;
+    overflow: hidden;
+  }
+
+  .blog-hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 800px 600px at 50% 30%, rgba(96,165,250,0.08) 0%, transparent 70%),
+      linear-gradient(135deg, #0a1424 0%, #0a111d 50%, #060b14 100%);
+  }
+
+  .blog-hero-content { position: relative; z-index: 2; max-width: 800px; }
+
+  .blog-hero-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  .blog-hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 12vw, 8rem);
+    line-height: 0.88;
+    color: var(--snow);
+    letter-spacing: 0.02em;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+  }
+
+  .blog-hero-sub {
+    margin-top: 24px;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--stone);
+    max-width: 600px;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp 1s 0.7s forwards;
+  }
+
+  /* BLOG CONTENT */
+  #blog-content {
+    padding: 100px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .blog-list { display: flex; flex-direction: column; }
+
+  .blog-post-main {
+    margin-bottom: 80px;
+    padding-bottom: 60px;
+    border-bottom: 2px solid rgba(96,165,250,0.1);
+  }
+
+  .blog-post-header {
+    margin-bottom: 40px;
+  }
+
+  .blog-post-meta {
+    display: flex; gap: 24px; align-items: center;
+    margin-bottom: 24px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--stone);
+    letter-spacing: 0.15em;
+  }
+
+  .blog-post-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ember);
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+
+  .blog-post-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    line-height: 0.95;
+    color: var(--snow);
+    margin-bottom: 20px;
+  }
+
+  .blog-post-body {
+    font-size: 1.1rem;
+    line-height: 1.9;
+    color: var(--fog);
+    margin-bottom: 24px;
+  }
+
+  .blog-post-body p {
+    margin-bottom: 20px;
+  }
+
+  .blog-post-body em {
+    color: var(--stone);
+    font-style: italic;
+  }
+
+  .blog-post-body strong {
+    color: var(--snow);
+    font-weight: 400;
+  }
+
+  .blog-post-image {
+    width: 100%;
+    height: 400px;
+    margin: 40px 0;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(96,165,250,0.15);
+  }
+
+  .blog-post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  .blog-post-image:hover img {
+    transform: scale(1.02);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 48px;
+    border-top: 1px solid rgba(138,126,110,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+    color: var(--stone);
+  }
+  .footer-logo span { color: var(--ember); }
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    color: rgba(138,126,110,0.4);
+    letter-spacing: 0.1em;
+  }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--stone);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--ember); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    #blog-hero { min-height: 50vh; padding: 100px 24px; }
+    #blog-content { padding: 60px 24px; }
+    .blog-post-title { font-size: 2rem; }
+    .blog-post-body { font-size: 1rem; }
+    footer { flex-direction: column; gap: 24px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">ROHIT<span>.</span>KAWAN</a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#treks">Treks</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- BLOG HERO -->
+<section id="blog-hero">
+  <div class="blog-hero-bg"></div>
+  <div class="blog-hero-content">
+    <p class="blog-hero-label">Trail Stories & Reflections</p>
+    <h1 class="blog-hero-title">Trail Chronicles</h1>
+    <p class="blog-hero-sub">Detailed accounts of my treks, the lessons learned at altitude, and the mountains that changed me.</p>
+  </div>
+</section>
+
+<!-- BLOG CONTENT -->
+<section id="blog-content">
+  <div class="blog-list">
+    
+    <!-- Blog Post 1 -->
+    <article class="blog-post-main">
+      <div class="blog-post-header">
+        <div class="blog-post-tag">Langtang Region</div>
+        <h2 class="blog-post-title">Kyanjin Ri: Where Earth Meets Sky</h2>
+        <div class="blog-post-meta">
+          <span>May 2026</span>
+          <span>5 DAYS TREK</span>
+          <span>4,380 METRES</span>
+        </div>
+      </div>
+      <div class="blog-post-image">
+        <img src="/images/trek-1.jpg" alt="Kyanjin Ri Summit" loading="lazy">
+      </div>
+      <div class="blog-post-body">
+        <p>Standing atop Kyanjin Ri at dawn, I understood why ancient cultures built temples at altitude. The world doesn't end at the summit — it simply becomes clearer.</p>
+        <p>The Langtang Valley trek is often overshadowed by more famous routes, but it holds a quiet magic that draws you deeper with each step. Five days of ascending through rhododendron forests, past prayer flags that dance with every gust of wind, and finally to the alpine meadows where silence speaks louder than any sound.</p>
+        <p><em>Day 1 began in the lowlands where the air was thick and the path well-trodden.</em> By day three, we were above the clouds. The locals call it "Kyanjin Ri" — the peak above the glacier lake. <strong>It's not the highest mountain I've climbed, but it's the one that made me question everything.</strong></p>
+        <p>The descent was slow. Not because the path was difficult, but because I didn't want to leave. The mountains have a way of doing that — they make time stop.</p>
+      </div>
+    </article>
+
+    <!-- Blog Post 2 -->
+    <article class="blog-post-main">
+      <div class="blog-post-header">
+        <div class="blog-post-tag">Annapurna Circuit</div>
+        <h2 class="blog-post-title">Base Camp Reflections: The Annapurna Encounter</h2>
+        <div class="blog-post-meta">
+          <span>April 2026</span>
+          <span>5 DAYS TREK</span>
+          <span>4,130 METRES</span>
+        </div>
+      </div>
+      <div class="blog-post-image">
+        <img src="/images/trek-2.jpg" alt="Annapurna Base Camp" loading="lazy">
+      </div>
+      <div class="blog-post-body">
+        <p>Annapurna I dominates the landscape like a king holding court. At 8,091 meters, she's the tenth highest mountain in the world, but standing beneath her, you realize these numbers mean nothing.</p>
+        <p>The trek to Annapurna Base Camp is a journey through extreme contrasts. You pass through rice paddies and small villages, then ascending rapidly into the high alpine regions where the air thins and your heartbeat becomes your constant companion.</p>
+        <p><em>The locals warned us about the weather.</em> Mountain guides know these peaks intimately, respect them, fear them even. <strong>By the time we reached base camp, I understood their warnings were prayers.</strong></p>
+        <p>I spent three hours at the base camp, just watching. Watching the mountain, watching clouds form and dissipate, watching the light change the color of the peaks from gold to crimson to deep purple. In those moments, I felt both infinitely small and eternally present.</p>
+        <p>This is what the mountains teach you: humility, perspective, and the realization that some things are far greater than yourself.</p>
+      </div>
+    </article>
+
+    <!-- Blog Post 3 -->
+    <article class="blog-post-main">
+      <div class="blog-post-header">
+        <div class="blog-post-tag">Langtang National Park</div>
+        <h2 class="blog-post-title">Pachpokhari: The Sacred Lakes Trek</h2>
+        <div class="blog-post-meta">
+          <span>March 2026</span>
+          <span>4 DAYS TREK</span>
+          <span>4,103 METRES</span>
+        </div>
+      </div>
+      <div class="blog-post-image">
+        <img src="/images/trek-3.jpg" alt="Pachpokhari Lakes" loading="lazy">
+      </div>
+      <div class="blog-post-body">
+        <p>Pachpokhari translates to "five lakes" — and arriving at the first one, I understood why this place is sacred. Crystal clear water reflecting the sky, surrounded by peaks that look like they were carved by gods.</p>
+        <p>This trek is lesser-known than others in the region, which means fewer footprints, more silence, and a deeper connection with the landscape. There's a certain intimacy when you're trekking where few others venture.</p>
+        <p><em>The Sherpa guide told us stories of the lakes.</em> Stories of pilgrims who came for spiritual awakening, of prayers whispered to the wind, of the mountains listening. <strong>I came as a skeptic but left as a believer.</strong></p>
+        <p>On the third day, we spent the entire afternoon by the highest lake. No agenda, no schedule to keep. Just me, the mountains, and the profound realization that sometimes the destination is just an excuse for the journey.</p>
+        <p>This trek changed my understanding of what "trekking" means. It's not about conquering peaks or checking boxes on a list. It's about listening to what the mountains want to tell you.</p>
+      </div>
+    </article>
+
+    <!-- Blog Post 4 -->
+    <article class="blog-post-main">
+      <div class="blog-post-header">
+        <div class="blog-post-tag">Rasuwa District</div>
+        <h2 class="blog-post-title">Gosaikunda: Sacred Summit at Sunset</h2>
+        <div class="blog-post-meta">
+          <span>February 2026</span>
+          <span>4 DAYS TREK</span>
+          <span>4,380 METRES</span>
+        </div>
+      </div>
+      <div class="blog-post-image">
+        <img src="/images/trek-4.jpg" alt="Gosaikunda Lake" loading="lazy">
+      </div>
+      <div class="blog-post-body">
+        <p>Gosaikunda means "Lake of the Cow-herder" — a name rooted in Hindu mythology. But standing at the edge of this legendary glacial lake, mythology feels less like folklore and more like lived reality.</p>
+        <p>The trek to Gosaikunda is challenging — steep ascents that leave your lungs burning and your legs trembling. But every step is worth it. Because when you finally break through the final pass and see the lake shimmering against the backdrop of the Himalayas, you understand why pilgrims and trekkers have been making this journey for centuries.</p>
+        <p><em>I arrived at sunset.</em> The sky was on fire — oranges and purples and golds colliding in a chaos of beauty. <strong>I stood there for three hours, watching the light change the color of everything.</strong></p>
+        <p>The next morning, I woke before dawn and hiked to a higher vantage point. Watching the sun rise over the mountains, I experienced something I can only describe as spiritual. Not religious necessarily, but a connection to something larger than myself — to the earth, to time, to the eternal nature of mountains.</p>
+        <p>Gosaikunda isn't just a lake or a peak. It's a pilgrimage to yourself.</p>
+      </div>
+    </article>
+
+    <!-- Blog Post 5 -->
+    <article class="blog-post-main">
+      <div class="blog-post-header">
+        <div class="blog-post-tag">Kaski District</div>
+        <h2 class="blog-post-title">Mardi Himal: The Hidden Trail</h2>
+        <div class="blog-post-meta">
+          <span>January 2026</span>
+          <span>3 DAYS TREK</span>
+          <span>4,200 METRES</span>
+        </div>
+      </div>
+      <div class="blog-post-image">
+        <img src="/images/trek-5.jpg" alt="Mardi Himal Ridge" loading="lazy">
+      </div>
+      <div class="blog-post-body">
+        <p>While tourists flock to Annapurna Base Camp, few venture to Mardi Himal. This overlooked trek is a hidden gem, a place where the mountains feel less crowded and a thousand times more intimate.</p>
+        <p>Mardi means "tail" in Nepali, and the trek earned its name for good reason — it's a narrow, ridge-like path that feels like walking along the spine of the earth. On clear days, you see Machapuchare (Fish Tail) in all its glory — a sacred peak that's never been summited out of respect for its spiritual significance.</p>
+        <p><em>This trek demands respect.</em> The paths are narrower than other routes, the exposure is real, and a single mistake could be costly. <strong>But this is precisely why I loved it.</strong> It demands your full attention. You can't daydream or zone out. You are completely, utterly present.</p>
+        <p>Present in your fears, present in your joy, present in the moment. That's what I took from Mardi Himal — the gift of presence. In a world obsessed with capturing moments for social media, Mardi Himal demands that you simply experience them.</p>
+        <p>This trail won't make headlines, and it won't break any records. But if you're looking for a trek that will change how you see mountains and yourself, Mardi Himal is waiting.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">ROHIT<span>.</span>KAWAN</div>
+  <div class="footer-links">
+    <a href="https://www.instagram.com/roraririiru/" target="_blank">Instagram</a>
+  </div>
+  <div class="footer-copy">© 2026 — All rights reserved</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  let mx = 0, my = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+  });
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform += ' scale(1.8)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+    });
+  });
+
+  // Nav background on scroll
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = window.scrollY > 80
+      ? 'rgba(10,8,5,0.97)'
+      : 'linear-gradient(to bottom, rgba(10,8,5,0.95), transparent)';
+  });
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROHIT KAWAN — Into The Mountains</title>
+<title>ROHIT KAWAN</title>
 <link rel="icon" type="image/jpeg" href="logo.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -38,7 +38,7 @@
     border-radius: 50%;
     pointer-events: none;
     z-index: 9999;
-    transition: transform 0.15s ease;
+    transition: transform 0.06s ease;
     mix-blend-mode: screen;
   }
 
@@ -94,17 +94,21 @@
   .hero-bg {
     position: absolute; inset: 0;
     background:
-      radial-gradient(ellipse at 60% 40%, rgba(96,165,250,0.14) 0%, transparent 60%),
-      radial-gradient(ellipse at 20% 80%, rgba(56,120,190,0.18) 0%, transparent 50%),
-      linear-gradient(160deg, #0a1424 0%, #13263f 40%, #0a111d 100%);
+      radial-gradient(ellipse 800px 600px at 50% 30%, rgba(96,165,250,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 1000px 800px at 70% 50%, rgba(56,120,190,0.05) 0%, transparent 60%),
+      linear-gradient(135deg, #0a1424 0%, #0a111d 50%, #060b14 100%);
   }
+  
+  .element::-webkit-scrollbar {
+  display: none;
+}
 
   /* Mountain SVG silhouette */
   .mountain-silhouette {
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    height: 65%;
-    opacity: 0.6;
+    height: 100%;
+    opacity: 0.9;
   }
 
   .hero-content { position: relative; z-index: 2; max-width: 900px; }
@@ -161,24 +165,7 @@
     display: block;
   }
 
-  .scroll-indicator {
-    position: absolute; right: 48px; bottom: 80px;
-    writing-mode: vertical-rl;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.25em;
-    color: var(--stone);
-    opacity: 0;
-    animation: fadeIn 1.5s 1.5s forwards;
-  }
 
-  .scroll-line {
-    display: block;
-    width: 1px; height: 60px;
-    background: linear-gradient(to bottom, var(--ember), transparent);
-    margin: 12px auto 0;
-    animation: scrollPulse 2s 2s infinite;
-  }
 
   /* ABOUT */
   #about {
@@ -193,7 +180,7 @@
 
   .section-label {
     font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
+    font-size: 1.5rem;
     letter-spacing: 0.4em;
     text-transform: uppercase;
     color: var(--ember);
@@ -334,7 +321,7 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    transition: transform 0.6s ease;
+    transition: transform 0.06s ease;
   }
   .trek-card:hover .trek-bg { transform: scale(1.04); }
 
@@ -361,6 +348,12 @@
       linear-gradient(160deg, rgba(9,20,37,0.35) 0%, rgba(9,20,37,0.6) 100%),
       url('images/trek-4.jpg');
     background-color: #23385a;
+  }
+  .trek-bg-5 {
+    background-image:
+      linear-gradient(160deg, rgba(9,20,37,0.35) 0%, rgba(9,20,37,0.6) 100%),
+      url('images/trek-5.jpg');
+    background-color: #1f3652;
   }
 
   .trek-overlay {
@@ -675,9 +668,9 @@
     opacity: 1;
     transform: translateY(0);
   }
-  .reveal-delay-1 { transition-delay: 0.15s; }
-  .reveal-delay-2 { transition-delay: 0.3s; }
-  .reveal-delay-3 { transition-delay: 0.45s; }
+  .reveal-delay-1 { transition-delay: 0.08s; }
+  .reveal-delay-2 { transition-delay: 0.16s; }
+  .reveal-delay-3 { transition-delay: 0.24s; }
 
   @media (max-width: 768px) {
     nav { padding: 20px 24px; }
@@ -703,9 +696,10 @@
 <nav>
   <a href="#hero" class="nav-logo">ROHIT<span>.</span>KAWAN</a>
   <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#treks">Treks</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#treks">Treks</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
   </ul>
 </nav>
 
@@ -738,11 +732,6 @@
     <p class="hero-sub">Chasing summits, silence, and the stories that only exist at altitude.</p>
     <a href="#treks" class="hero-cta">Explore my treks</a>
   </div>
-
-  <div class="scroll-indicator">
-    Scroll to discover
-    <span class="scroll-line"></span>
-  </div>
 </section>
 
 <!-- ABOUT -->
@@ -756,12 +745,12 @@
       <em>This site is my trail journal — raw, honest, and very muddy.</em></p>
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-number">6</div>
+        <div class="stat-number">7</div>
         <div class="stat-label">ROUTES COMPLETED</div>
       </div>
       
       <div class="stat-card">
-        <div class="stat-number">4.3K</div>
+        <div class="stat-number">4.4K</div>
         <div class="stat-label">MAX ELEVATION (m)</div>
       </div>
       <div class="stat-card">
@@ -773,7 +762,7 @@
 
   <div class="about-portrait reveal reveal-delay-1">
     <div class="portrait-frame">
-      <img src="/images/me.webp" alt="Rohit Kawan portrait">
+      <img src="/images/me.webp" alt="Rohit Kawan portrait" loading="lazy">
     </div>
     <div class="portrait-decoration"></div>
     <div class="portrait-decoration2"></div>
@@ -853,7 +842,7 @@
         <div class="trek-elevation-unit">METRES</div>
       </div>
       <div class="trek-info">
-        <div class="trek-region">Nepal / Rasu7wa</div>
+        <div class="trek-region">Nepal / Rasuwa</div>
         <div class="trek-name">Gosaikunda</div>
         <div class="trek-meta">
           <span>4 DAYS</span>
@@ -862,6 +851,86 @@
         </div>
       </div>
     </div>
+
+    <div class="trek-card reveal">
+      <div class="trek-bg trek-bg-5"></div>
+      <div class="trek-overlay"></div>
+      <div class="trek-elevation">
+        <div class="trek-elevation-num">4,200</div>
+        <div class="trek-elevation-unit">METRES</div>
+      </div>
+      <div class="trek-info">
+        <div class="trek-region">Nepal / Kaski</div>
+        <div class="trek-name">Mardi</div>
+        <div class="trek-meta">
+          <span>3 DAYS</span>
+          <span>54 KM</span>
+          <span>EASY</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section id="blog">
+  <div class="blog-header reveal">
+    <div>
+      <p class="section-label">// 003 — Trail Stories</p>
+      <h2 class="blog-title">Trek Chronicles</h2>
+    </div>
+  </div>
+
+  <div class="blog-list">
+    <a href="#" class="blog-post reveal">
+      <div class="blog-num">01</div>
+      <div class="blog-body">
+        <div class="blog-tag">Langtang</div>
+        <div class="blog-headline">Kyanjin Ri: Where Earth Meets Sky</div>
+        <div class="blog-excerpt">A intimate account of summiting Kyanjin Ri through the misty mountains of Langtang. Discovering the silence above 4,000 meters and the stories whispered by ancient peaks.</div>
+      </div>
+      <div class="blog-date">May 2026</div>
+    </a>
+
+    <a href="#" class="blog-post reveal reveal-delay-1">
+      <div class="blog-num">02</div>
+      <div class="blog-body">
+        <div class="blog-tag">Annapurna</div>
+        <div class="blog-headline">Base Camp Reflections: The Annapurna Circuit</div>
+        <div class="blog-excerpt">Five days of trekking through rhododendron forests and alpine meadows. Standing at the base of Annapurna I and questioning everything you thought you knew about yourself.</div>
+      </div>
+      <div class="blog-date">April 2026</div>
+    </a>
+
+    <a href="#" class="blog-post reveal reveal-delay-2">
+      <div class="blog-num">03</div>
+      <div class="blog-body">
+        <div class="blog-tag">Langtang</div>
+        <div class="blog-headline">Pachpokhari: The Sacred Lakes Trek</div>
+        <div class="blog-excerpt">A lesser-known gem in the Langtang region. Crystal-clear alpine lakes, prayer flags fluttering in thin air, and the profound peace that comes with being far from the world.</div>
+      </div>
+      <div class="blog-date">March 2026</div>
+    </a>
+
+    <a href="#" class="blog-post reveal reveal-delay-3">
+      <div class="blog-num">04</div>
+      <div class="blog-body">
+        <div class="blog-tag">Rasuwa</div>
+        <div class="blog-headline">Gosaikunda: Sacred Summit at Sunset</div>
+        <div class="blog-excerpt">Climbing to the legendary Gosaikunda Lake where mythology meets mountains. A trek that challenges both body and spirit, rewarding with sunsets that paint the Himalayas in gold.</div>
+      </div>
+      <div class="blog-date">February 2026</div>
+    </a>
+
+    <a href="#" class="blog-post reveal">
+      <div class="blog-num">05</div>
+      <div class="blog-body">
+        <div class="blog-tag">Kaski</div>
+        <div class="blog-headline">Mardi Himal: The Hidden Trail</div>
+        <div class="blog-excerpt">Escape the crowded plains and discover the undiscovered Mardi Himal. Three days through forests and alpine terrain, offering views of Machapuchare that few tourists ever witness.</div>
+      </div>
+      <div class="blog-date">April 2026</div>
+    </a>
   </div>
 </section>
 
@@ -869,7 +938,7 @@
 <section id="contact">
   <div class="contact-bg"></div>
   <div class="contact-inner reveal">
-    <p class="contact-pre">// 003 — Get in Touch</p>
+    <p class="contact-pre">// 004 — Get in Touch</p>
     <h2 class="contact-title">Let's talk trails</h2>
     <p class="contact-body">Planning an expedition? Interested in collaborating? Or just want to talk about mountains — I'm always up for that.</p>
 
@@ -932,6 +1001,26 @@
     nav.style.background = window.scrollY > 80
       ? 'rgba(10,8,5,0.97)'
       : 'linear-gradient(to bottom, rgba(10,8,5,0.95), transparent)';
+  });
+
+  // Lazy load trek card background images
+  const trekBgs = document.querySelectorAll('.trek-bg');
+  const bgObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const bgElement = entry.target;
+        const computedStyle = window.getComputedStyle(bgElement);
+        const bgImage = computedStyle.backgroundImage;
+        if (bgImage && bgImage !== 'none') {
+          bgElement.style.backgroundImage = bgImage;
+        }
+        bgObserver.unobserve(bgElement);
+      }
+    });
+  }, { rootMargin: '100px' });
+  
+  trekBgs.forEach(bg => {
+    bgObserver.observe(bg);
   });
 </script>
 </body>
